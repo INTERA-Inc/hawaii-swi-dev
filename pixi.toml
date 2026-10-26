@@ -35,6 +35,10 @@ tomli-w = "*"
 # dev tooling
 ruff = "*"
 codespell = "*"
+jupytext = ">=1.19.6,<2"
+myst-nb = ">=1.4.0,<2"
+sphinx = ">=9.1.1,<10"
+sphinx-book-theme = ">=1.4.0,<2"
 
 [pypi-dependencies]
 # The develop branch of flopy, whose get-modflow can install from any repository
@@ -51,6 +55,11 @@ get-mf6 = "python scripts/get_mf6.py"
 check-mf6 = "mf6 -v"
 # Build and run a small SWI model with the installed mf6 and flopy classes.
 smoke-test = "python scripts/smoke_test.py"
+# Run the SWI notebooks; fails on an error or a notebook over 30 s. Pass
+# notebook paths to run specific ones.
+run-notebooks = "python scripts/run_notebooks.py"
+# Build the documentation, executing the SWI notebooks.
+docs = "sphinx-build -b html docs docs/_build/html"
 jupyter = "jupyter lab"
 lint = "ruff check ."
 format = "ruff format ."

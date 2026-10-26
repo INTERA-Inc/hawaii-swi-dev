@@ -1,5 +1,5 @@
 # codespell configuration
 [codespell]
-skip = .git,.pixi,pixi.lock,dfn,*.svg,*.png,*.jpg,*.pdf
+skip = .git,.pixi,pixi.lock,dfn,_build,test_models,./docs/notebooks,*.svg,*.png,*.jpg,*.pdf
 # MODFLOW domain terms and package acronyms
 ignore-words-list = nam,wel,delt,theis,lke,ist
