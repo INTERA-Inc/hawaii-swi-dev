@@ -219,6 +219,9 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# USGS data release, downloaded by get-data
+data/
+
 # MODFLOW 6 DFN files, installed from the SWI preview release by get-mf6
 dfn/
 
