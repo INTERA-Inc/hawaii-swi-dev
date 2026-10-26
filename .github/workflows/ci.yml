@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+  schedule:
+    # nightly, to pick up new modflow6-feat-swi-preview releases
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install:
+    name: pixi install (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    env:
+      # get-mf6 runs explicitly below instead of from the activation hook
+      MF6_SKIP_AUTOINSTALL: "1"
+      # authenticates flopy's get-modflow GitHub API requests
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # linux-64, osx-arm64, and win-64
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up pixi and install the locked environment
+        uses: prefix-dev/setup-pixi@v0.11.2
+        with:
+          locked: true
+          cache: true
+
+      - name: Install MODFLOW 6 SWI preview
+        run: pixi run get-mf6 --force
+
+      - name: Check MODFLOW 6
+        run: pixi run check-mf6
+
+      - name: Import the generated flopy SWI classes with the activation hook enabled
+        env:
+          MF6_SKIP_AUTOINSTALL: ""
+        run: pixi run python -c "import flopy; print(flopy.mf6.ModflowGwfswi)"
+
+      - name: Run SWI smoke test
+        run: pixi run smoke-test
