@@ -55,5 +55,5 @@ jobs:
         run: pixi run smoke-test
 
       - name: Run SWI notebooks
-        run: pixi run run-notebooks
+        run: pixi run run-verification-notebooks
 
