@@ -52,9 +52,8 @@ mf6, which does not create it. `output/` directories and MODFLOW 6 output files
 tests, ported from the autotests on the `feat-swi` branch of
 [christianlangevin/modflow6](https://github.com/christianlangevin/modflow6/tree/feat-swi).
 Each notebook checks its results against the test's criteria and fails if they
-are not met. The rendered notebooks are at
-[hawaii-swi-dev.readthedocs.io](https://hawaii-swi-dev.readthedocs.io/en/latest/).
-Open them in JupyterLab (`pixi run jupyter`) or run all of them with
+are not met. Open them in JupyterLab (`pixi run jupyter`) or run all of them
+with
 
 ```
 pixi run run-notebooks
