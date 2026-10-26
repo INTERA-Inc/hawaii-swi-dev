@@ -33,12 +33,12 @@ import numpy as np
 # %% [markdown]
 # ## Model parameters
 #
-# Model files are written to `test_models/<case>/` in the repository root, and
-# output to its `output/` subdirectory.
+# Model files are written to `models/<case>/` beside the notebooks, and output
+# to its `output/` subdirectory.
 
 # %%
 root = next(p for p in (Path.cwd(), *Path.cwd().parents) if (p / "pixi.toml").exists())
-model_root = root / "test_models"
+model_root = root / "notebooks-verification" / "models"
 
 cases = {
     "swi-tvg-uniform": "Uniform saltwater head",
@@ -59,7 +59,7 @@ hsalt_layered = [0.05, 0.10, 0.15]  # saltwater head in each layer, in meters
 # ## Build and run the models
 #
 # The TVG6 file is written beside the model files. A reference model,
-# `test_models/swi-tvg-ref/`, specifies the uniform saltwater head with the
+# `models/swi-tvg-ref/`, specifies the uniform saltwater head with the
 # SALTWATER_HEAD option.
 
 

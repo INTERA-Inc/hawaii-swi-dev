@@ -31,12 +31,12 @@ import numpy as np
 # %% [markdown]
 # ## Model parameters
 #
-# Model files are written to `test_models/<case>/` in the repository root, and
-# output to its `output/` subdirectory.
+# Model files are written to `models/<case>/` beside the notebooks, and output
+# to its `output/` subdirectory.
 
 # %%
 root = next(p for p in (Path.cwd(), *Path.cwd().parents) if (p / "pixi.toml").exists())
-model_root = root / "test_models"
+model_root = root / "notebooks-verification" / "models"
 
 cases = {
     "swi01a": "Confined",
