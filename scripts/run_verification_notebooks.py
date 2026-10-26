@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Run the SWI notebooks and report their run times.
+"""Run the SWI verification notebooks and report their run times.
 
 Each jupytext notebook in notebooks-verification/ runs as a script in its own
 process, from that directory, with the non-interactive matplotlib backend. A
