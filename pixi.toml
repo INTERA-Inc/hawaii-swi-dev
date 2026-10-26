@@ -52,10 +52,18 @@ rtds-action = ">=1.1.0, <2"
 
 [tasks]
 # Complete the setup once `pixi install` has created the environment.
-install = { depends-on = ["get-mf6"] }
+install = { depends-on = ["get-mf6", "get-exes", "get-data"] }
 # Install the latest MODFLOW 6 SWI preview release and its DFN files, and
 # regenerate the flopy MODFLOW 6 classes. Pass --force to reinstall.
 get-mf6 = "python scripts/get_mf6.py"
+# Install the single (mf2005) and double (mf2005dbl) precision MODFLOW-2005
+# executables, for rerunning the data release models. Pass --force to reinstall.
+get-exes = "python scripts/get_exes.py"
+# Download the Rotzoll and Izuka (2023) MODFLOW-2005 SWI2 data release to
+# data/pp1876/, only the files that are missing or have changed on ScienceBase.
+# Pass island names (kauai, maui, oahu) to extract only those models, and
+# --force to download everything again.
+get-data = "python scripts/get_data_release.py"
 # Report the installed MODFLOW 6 version.
 check-mf6 = "mf6 -v"
 # Build and run a small SWI model with the installed mf6 and flopy classes.

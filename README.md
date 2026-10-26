@@ -25,6 +25,20 @@ Run `pixi run get-mf6` to update to a newer preview release, or
 `pixi run get-mf6 --force` to reinstall. `pixi run check-mf6` reports the
 installed version and `pixi run smoke-test` builds and runs a small SWI model.
 
+## USGS data release
+
+`pixi run get-data` downloads the MODFLOW-2005 SWI2 models of Kauai, Oahu, and
+Maui from Rotzoll and Izuka (2023,
+[doi:10.5066/P97CPK5C](https://doi.org/10.5066/P97CPK5C)) to `data/pp1876/`,
+which is excluded from the repository. Pass island names to extract only those
+models, for example `pixi run get-data oahu`. Files are downloaded only when
+they are missing locally or their checksum on ScienceBase has changed; pass
+`--force` to download them again. The release includes the model input and the
+MODFLOW-2005 output, so the original models do not have to be rerun. To rerun
+them, `pixi run get-exes` installs the single (`mf2005`) and double
+(`mf2005dbl`) precision MODFLOW-2005 executables; the release output was
+generated with single precision MODFLOW-2005 version 1.12.00.
+
 ## Model output
 
 Model output is always written to an `output/` directory beside the model input

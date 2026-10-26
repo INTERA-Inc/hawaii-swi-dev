@@ -43,6 +43,9 @@ jobs:
       - name: Install MODFLOW 6 SWI preview
         run: pixi run get-mf6 --force
 
+      - name: Install MODFLOW-2005
+        run: pixi run get-exes --force
+
       - name: Check MODFLOW 6
         run: pixi run check-mf6
 
