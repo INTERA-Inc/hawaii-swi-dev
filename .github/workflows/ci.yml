@@ -57,29 +57,3 @@ jobs:
       - name: Run SWI notebooks
         run: pixi run run-notebooks
 
-  docs:
-    name: docs
-    runs-on: ubuntu-latest
-    env:
-      MF6_SKIP_AUTOINSTALL: "1"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Set up pixi and install the locked environment
-        uses: prefix-dev/setup-pixi@v0.11.2
-        with:
-          locked: true
-          cache: true
-
-      - name: Install MODFLOW 6 SWI preview
-        run: pixi run get-mf6
-
-      - name: Build documentation, executing the SWI notebooks
-        run: pixi run docs
-
-      - name: Upload documentation
-        uses: actions/upload-artifact@v7
-        with:
-          name: docs-html
-          path: docs/_build/html

@@ -1,0 +1,8 @@
+# Read the Docs renders the notebooks executed by the docs workflow, so it
+# needs only the documentation tooling.
+ipython
+jupytext
+nbsphinx
+rtds-action
+sphinx
+sphinx-rtd-theme

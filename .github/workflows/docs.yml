@@ -1,0 +1,70 @@
+name: docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # nightly, to pick up new modflow6-feat-swi-preview releases
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-docs:
+    name: Build docs
+    runs-on: ubuntu-latest
+    env:
+      # get-mf6 runs explicitly below instead of from the activation hook
+      MF6_SKIP_AUTOINSTALL: "1"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up pixi and install the locked environment
+        uses: prefix-dev/setup-pixi@v0.11.2
+        with:
+          locked: true
+          cache: true
+
+      - name: Install MODFLOW 6 SWI preview
+        run: pixi run get-mf6
+
+      - name: Run notebooks and build HTML docs
+        run: pixi run docs-build-exec
+
+      # Read the Docs renders these rather than executing the notebooks
+      - name: Upload rendered notebooks
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rendered-notebooks-${{ github.sha }}
+          path: docs/source/notebooks/
+          retention-days: 7
+
+      - name: Upload built documentation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: built-docs
+          path: docs/_build/html/
+          retention-days: 7
+
+  trigger_rtd:
+    name: Trigger Read the Docs build
+    runs-on: ubuntu-latest
+    if: success() && github.repository_owner == 'INTERA-Inc' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: build-docs
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Trigger RTD build via webhook
+        uses: dfm/rtds-action@v1
+        with:
+          webhook_url: ${{ secrets.RTDS_WEBHOOK_URL }}
+          webhook_token: ${{ secrets.RTDS_WEBHOOK_TOKEN }}
+          commit_ref: ${{ github.ref }}

@@ -35,15 +35,20 @@ tomli-w = "*"
 # dev tooling
 ruff = "*"
 codespell = "*"
+# docs; jupytext converts the notebooks in notebooks-verification/ to .ipynb
 jupytext = ">=1.19.6,<2"
-myst-nb = ">=1.4.0,<2"
+nbconvert = ">=7.17.2,<8"
+nbsphinx = ">=0.9.8,<0.10"
+pandoc = ">=3.12.1,<4"
 sphinx = ">=9.1.1,<10"
-sphinx-book-theme = ">=1.4.0,<2"
+sphinx-rtd-theme = ">=3.1.0,<4"
 
 [pypi-dependencies]
 # The develop branch of flopy, whose get-modflow can install from any repository
 # that follows the MODFLOW release asset naming convention.
 flopy = { git = "https://github.com/modflowpy/flopy.git", branch = "develop" }
+# Read the Docs downloads the notebooks executed by the docs workflow
+rtds-action = ">=1.1.0, <2"
 
 [tasks]
 # Complete the setup once `pixi install` has created the environment.
@@ -58,8 +63,11 @@ smoke-test = "python scripts/smoke_test.py"
 # Run the SWI notebooks; fails on an error or a notebook over 30 s. Pass
 # notebook paths to run specific ones.
 run-notebooks = "python scripts/run_notebooks.py"
-# Build the documentation, executing the SWI notebooks.
-docs = "sphinx-build -b html docs docs/_build/html"
+# Build the documentation in docs/_build/html. docs-build-exec executes the
+# notebooks first; docs-build renders them without output.
+docs-build = "python scripts/sphinx_build.py"
+docs-build-exec = "python scripts/sphinx_build.py --execute"
+docs-clean = "rm -rf docs/_build docs/source/notebooks"
 jupyter = "jupyter lab"
 lint = "ruff check ."
 format = "ruff format ."
