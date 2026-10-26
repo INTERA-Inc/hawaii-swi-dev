@@ -16,6 +16,9 @@ from get_mf6 import bindir, conda_prefix
 
 EXES = ("mf2005", "mf2005dbl")
 
+# get-modflow installs the double precision build with its program
+PROGRAMS = {"mf2005"}
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
@@ -35,10 +38,13 @@ def main() -> int:
         run_main(
             bdir,
             repo="executables",
-            subset=set(EXES),
+            subset=PROGRAMS,
             downloads_dir=Path(tmpdir),
             force=True,
         )
+    missing = [exe for exe in EXES if not (bdir / f"{exe}{suffix}").is_file()]
+    if missing:
+        sys.exit(f"not installed: {', '.join(missing)}")
     return 0
 
 
