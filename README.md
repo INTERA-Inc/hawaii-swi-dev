@@ -1,4 +1,7 @@
 # hawaii-swi-dev
+
+[![Documentation Status](https://readthedocs.org/projects/hawaii-swi-dev/badge/?version=latest)](https://hawaii-swi-dev.readthedocs.io/en/latest/)
+
 R&amp;D Development repo that sets up USGS Groundwater Availability model runs for modflow 6 with swi
 
 ## Setup
