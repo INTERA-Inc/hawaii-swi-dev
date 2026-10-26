@@ -1,0 +1,66 @@
+[workspace]
+name = "hawaii-swi-dev"
+version = "0.1.0"
+channels = ["conda-forge"]
+# The platforms the modflow6-feat-swi-preview releases ship binaries for
+# (linux, macarm, and win64 assets).
+platforms = ["linux-64", "osx-arm64", "win-64"]
+
+[dependencies]
+python = "3.12.*"
+numpy = "*"
+pandas = ">=2.0"
+matplotlib = "*"
+scipy = "*"
+shapely = ">=2.0"
+pyproj = "*"
+pyshp = "*"
+geopandas = "*"
+rasterio = "*"
+xarray = "*"
+netcdf4 = "*"
+jupyterlab = "*"
+ipykernel = "*"
+git = "*"
+# Drives a running MODFLOW 6 through the libmf6 shared library.
+modflowapi = "*"
+# flopy's codegen dependencies (conda packages carry no extras), used by
+# scripts/get_mf6.py to regenerate the flopy MODFLOW 6 classes from the DFN
+# files of the installed SWI preview release.
+modflow-devtools = ">=1.7.0,!=1.9.0,<2"
+jinja2 = ">=3.0"
+boltons = "*"
+tomli = "*"
+tomli-w = "*"
+# dev tooling
+ruff = "*"
+codespell = "*"
+
+[pypi-dependencies]
+# The develop branch of flopy, whose get-modflow can install from any repository
+# that follows the MODFLOW release asset naming convention.
+flopy = { git = "https://github.com/modflowpy/flopy.git", branch = "develop" }
+
+[tasks]
+# Complete the setup once `pixi install` has created the environment.
+install = { depends-on = ["get-mf6"] }
+# Install the latest MODFLOW 6 SWI preview release and its DFN files, and
+# regenerate the flopy MODFLOW 6 classes. Pass --force to reinstall.
+get-mf6 = "python scripts/get_mf6.py"
+# Report the installed MODFLOW 6 version.
+check-mf6 = "mf6 -v"
+# Build and run a small SWI model with the installed mf6 and flopy classes.
+smoke-test = "python scripts/smoke_test.py"
+jupyter = "jupyter lab"
+lint = "ruff check ."
+format = "ruff format ."
+spell = "codespell"
+
+# pixi has no post-install hook, so the (idempotent) installer runs from an
+# activation script. The first `pixi run`/`pixi shell` installs MODFLOW 6; later
+# activations are a fast, offline no-op.
+[target.unix.activation]
+scripts = ["scripts/postinstall.sh"]
+
+[target.win-64.activation]
+scripts = ["scripts/postinstall.bat"]

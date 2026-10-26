@@ -218,3 +218,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# MODFLOW 6 DFN files, installed from the SWI preview release by get-mf6
+dfn/
+
+# MODFLOW 6 output; model output is always written to an output/ directory
+# beside the model input files
+output/
+*.hds
+*.ucn
+*.cbc
+*.cbb
+*.bud
+*.grb
+*.lst
+fort.*
