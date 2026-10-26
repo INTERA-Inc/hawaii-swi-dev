@@ -53,3 +53,7 @@ jobs:
 
       - name: Run SWI smoke test
         run: pixi run smoke-test
+
+      - name: Run SWI notebooks
+        run: pixi run run-notebooks
+
