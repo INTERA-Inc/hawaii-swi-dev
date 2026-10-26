@@ -56,7 +56,7 @@ are not met. Open them in JupyterLab (`pixi run jupyter`) or run all of them
 with
 
 ```
-pixi run run-notebooks
+pixi run run-verification-notebooks
 ```
 
 which fails on an error or a notebook that takes longer than 30 s. The model

@@ -62,7 +62,7 @@ check-mf6 = "mf6 -v"
 smoke-test = "python scripts/smoke_test.py"
 # Run the SWI notebooks; fails on an error or a notebook over 30 s. Pass
 # notebook paths to run specific ones.
-run-notebooks = "python scripts/run_notebooks.py"
+run-verification-notebooks = "python scripts/run_verification_notebooks.py"
 # Build the documentation in docs/_build/html. docs-build-exec executes the
 # notebooks first; docs-build renders them without output.
 docs-build = "python scripts/sphinx_build.py"
