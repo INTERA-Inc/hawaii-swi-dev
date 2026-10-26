@@ -71,6 +71,7 @@ jobs:
         run: |
           test -f data/pp1876/model/input.oahu.0/Oahu_04_0.nam
           test -f data/pp1876/output/output.oahu.0/Oahu_04_0.hds
+          test -f data/pp1876/output/output.oahu.0/Oahu_04_0.zta
           test ! -e data/pp1876/model/input.kauai.0
           # a second run finds everything up to date and downloads nothing
           pixi run get-data oahu | tee get-data.log

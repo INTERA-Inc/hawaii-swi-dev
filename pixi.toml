@@ -56,7 +56,7 @@ install = { depends-on = ["get-mf6", "get-exes", "get-data"] }
 # Install the latest MODFLOW 6 SWI preview release and its DFN files, and
 # regenerate the flopy MODFLOW 6 classes. Pass --force to reinstall.
 get-mf6 = "python scripts/get_mf6.py"
-# Install the single (mf2005) and double (mf2005dbl) precision MODFLOW-2005
+# Install the mixed (mf2005) and double (mf2005dbl) precision MODFLOW-2005
 # executables, for rerunning the data release models. Pass --force to reinstall.
 get-exes = "python scripts/get_exes.py"
 # Download the Rotzoll and Izuka (2023) MODFLOW-2005 SWI2 data release to

@@ -35,9 +35,9 @@ models, for example `pixi run get-data oahu`. Files are downloaded only when
 they are missing locally or their checksum on ScienceBase has changed; pass
 `--force` to download them again. The release includes the model input and the
 MODFLOW-2005 output, so the original models do not have to be rerun. To rerun
-them, `pixi run get-exes` installs the single (`mf2005`) and double
+them, `pixi run get-exes` installs the mixed (`mf2005`) and double
 (`mf2005dbl`) precision MODFLOW-2005 executables; the release output was
-generated with single precision MODFLOW-2005 version 1.12.00.
+generated with mixed precision MODFLOW-2005 version 1.12.00.
 
 ## Model output
 

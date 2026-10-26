@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Install MODFLOW-2005 into the active pixi environment.
 
-The single (mf2005) and double (mf2005dbl) precision executables come from the
+The mixed (mf2005) and double (mf2005dbl) precision executables come from the
 latest MODFLOW-ORG/executables release via flopy's get-modflow, for rerunning
 the data release models. Executables already installed are left alone; pass
 ``--force`` to reinstall them.
