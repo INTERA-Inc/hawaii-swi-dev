@@ -27,7 +27,8 @@
 # 3. `swi-welafr03`: single fluid, confined deep cell with the head far above
 #    the cell top; the taper acts on (cell top - zeta).
 # 4. `swi-welafr04`: two fluids, saltwater well at the bottom of a column; the
-#    taper acts on (zeta - cell bottom) as the saltwater zone drains.
+#    taper acts on (zeta - cell bottom) as the saltwater zone drains. The taper
+#    band is half the cell, so the interface takes several steps to cross it.
 #
 # A fifth case, `swi-welafr05`, is expected to fail: an out-of-range
 # AUTO_FLOW_REDUCE_AUXNAME value for a well in a confined cell must be caught by
@@ -100,8 +101,10 @@ zeta0 = -0.5  # initial interface elevation, in meters
 tf = {
     # freshwater well in the top cell, saltwater constant head in the bottom cell
     "swi-welafr02": {"saltwell": False, "q": -0.02, "nstp": 20},
-    # saltwater well in the bottom cell, freshwater constant head in the top cell
-    "swi-welafr04": {"saltwell": True, "q": -0.05, "nstp": 30},
+    # saltwater well in the bottom cell, freshwater constant head in the top
+    # cell; the 0.5 m taper band is wider than the 0.25 m the interface drops
+    # in a step
+    "swi-welafr04": {"saltwell": True, "q": -0.05, "nstp": 30, "afr": 0.5},
 }
 
 # %% [markdown]
@@ -195,7 +198,9 @@ def build_gwf_tf(sim, is_salt, p):
     cell = (nlay - 1, 0, 0) if is_salt else (0, 0, 0)
     if has_well:
         flopy.mf6.ModflowGwfwel(
-            gwf, auto_flow_reduce=afr, stress_period_data=[[cell, p["q"]]]
+            gwf,
+            auto_flow_reduce=p.get("afr", afr),
+            stress_period_data=[[cell, p["q"]]],
         )
     else:
         flopy.mf6.ModflowGwfchd(gwf, stress_period_data=[[cell, strt]])
@@ -266,10 +271,10 @@ def sq_saturation(top, bot, x):
     return -2.0 / b**3 * w**3 + 3.0 / b**2 * w**2
 
 
-def expected_qmult(h, cell_top, cell_bot, ict, botred, topred):
+def expected_qmult(h, cell_top, cell_bot, ict, botred, topred, frac=afr):
     if not (ict != 0 or botred > cell_bot or topred < cell_top):
         return 1.0
-    band = afr * (cell_top - cell_bot)
+    band = frac * (cell_top - cell_bot)
     if band <= 0.0:
         return 1.0
     return sq_saturation(botred + band, botred, min(h, topred))
@@ -355,8 +360,13 @@ def two_fluid_rates(name):
         if prev_bounds is None:
             prev_bounds = (botred, topred)
         q_sim = float(bud.get_data(text="WEL", totim=t)[0]["q"][0])
-        q_exp = p["q"] * expected_qmult(h_well, cell_top, cell_bot, ict, botred, topred)
-        q_lag = p["q"] * expected_qmult(h_well, cell_top, cell_bot, ict, *prev_bounds)
+        frac = p.get("afr", afr)
+        q_exp = p["q"] * expected_qmult(
+            h_well, cell_top, cell_bot, ict, botred, topred, frac
+        )
+        q_lag = p["q"] * expected_qmult(
+            h_well, cell_top, cell_bot, ict, *prev_bounds, frac
+        )
         prev_bounds = (botred, topred)
         rows.append((t, h_well, zeta, q_sim, q_exp, q_lag))
     return np.array(rows)
