@@ -30,6 +30,7 @@ from cross_sections import (
     mf2005_results,
     plot_cross_section,
 )
+from mf2005_to_mf6 import default_ws
 
 # %% [markdown]
 # ## Scenario
@@ -49,9 +50,7 @@ fig, axes = plt.subplots(
 )
 for ax, island in zip(axes, islands):
     results = mf2005_results(island, scenario)
-    ws = root / "notebooks" / "models" / island
-    if scenario != 0:
-        ws = ws.with_name(f"{island}.{scenario}")
+    ws = default_ws(island, scenario)
     compare = (
         mf6_results(ws, island) if (ws / "output" / f"{island}.zta").exists() else None
     )

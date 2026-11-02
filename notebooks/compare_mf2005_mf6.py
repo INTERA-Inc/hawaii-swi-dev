@@ -28,23 +28,24 @@ from pathlib import Path
 import flopy
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 root = next(p for p in (Path.cwd(), *Path.cwd().parents) if (p / "pixi.toml").exists())
 sys.path.insert(0, str(root / "scripts"))
-from mf2005_to_mf6 import convert, mf2005_heads_zeta
+from mf2005_to_mf6 import convert, default_ws, mf2005_heads_zeta
 
 # %% [markdown]
 # ## Island and scenario
 #
-# Scenario 0 is the Current scenario (2010 conditions).
+# Scenario 0 is the Current scenario (2010 conditions). The scenarios are listed
+# in `SCENARIOS` of `scripts/mf2005_to_mf6.py`; Kauai and Maui have 0 to 2 and
+# Oahu 0 to 4.
 
 # %%
 island = "oahu"
 scenario = 0
 
-ws = root / "notebooks" / "models" / island
-if scenario != 0:
-    ws = ws.with_name(f"{island}.{scenario}")
+ws = default_ws(island, scenario)
 
 # %% [markdown]
 # ## Convert and run the MODFLOW 6 model
@@ -98,6 +99,24 @@ def summarize(label, diff, mask):
 summarize("zeta, all active cells", dz, active)
 summarize("zeta, interface in aquifer", dz, within)
 summarize("head, all active cells", dh, active & (head05 > -1.0e29))
+
+# %% [markdown]
+# ## Reduced wells
+#
+# Wells whose rate MODFLOW 6 reduced because the freshwater zone in the cell is
+# thinner than the reduction length. In MODFLOW-2005 these wells pump saltwater
+# for the part of the rate the freshwater zone cannot supply. Cell ids are
+# zero-based.
+
+# %%
+afr = pd.read_csv(ws / "output" / f"{island}.afr.csv")
+afr["cellid"] = [gwf.modelgrid.get_lrc(n - 1)[0] for n in afr["cellnumber"]]
+print(afr[["cellid", "rate-requested", "rate-actual", "wel-reduction"]])
+q = gwf.wel.stress_period_data.get_data(0)["q"].sum()
+print(
+    f"{len(afr)} wells reduced by {afr['wel-reduction'].sum():.0f} ft3/d "
+    f"of {q:.0f} ft3/d requested"
+)
 
 # %% [markdown]
 # ## Plot the results

@@ -64,6 +64,7 @@ get-exes = "python scripts/get_exes.py"
 # Pass island names (kauai, maui, oahu) to extract only those models, and
 # --force to download everything again.
 get-data = "python scripts/get_data_release.py"
+convert = "python scripts/mf2005_to_mf6.py"
 # Report the installed MODFLOW 6 version.
 check-mf6 = "mf6 -v"
 # Build and run a small SWI model with the installed mf6 and flopy classes.
