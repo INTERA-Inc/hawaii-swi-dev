@@ -64,6 +64,7 @@ get-exes = "python scripts/get_exes.py"
 # Pass island names (kauai, maui, oahu) to extract only those models, and
 # --force to download everything again.
 get-data = "python scripts/get_data_release.py"
+convert = "python scripts/mf2005_to_mf6.py"
 # Report the installed MODFLOW 6 version.
 check-mf6 = "mf6 -v"
 # Build and run a small SWI model with the installed mf6 and flopy classes.
@@ -76,6 +77,9 @@ run-verification-notebooks = "python scripts/run_verification_notebooks.py"
 docs-build = "python scripts/sphinx_build.py"
 docs-build-exec = "python scripts/sphinx_build.py --execute"
 docs-clean = "rm -rf docs/_build docs/source/notebooks"
+# Create or update the .ipynb paired with each jupytext .py notebook, from
+# whichever of the two was edited last.
+sync-notebooks = "jupytext --sync notebooks/*.py notebooks-verification/*.py"
 jupyter = "jupyter lab"
 lint = "ruff check ."
 format = "ruff format ."
