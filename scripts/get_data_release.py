@@ -11,6 +11,7 @@ missing or when their MD5 checksum on ScienceBase has changed. The input and
 output of the requested island models (all three by default) are extracted
 into data/pp1876/model/ and data/pp1876/output/, which restores the original
 archive structure. Pass ``--force`` to download and extract everything again.
+Requests that fail with a server error or timeout are retried.
 """
 
 import argparse
@@ -18,6 +19,8 @@ import hashlib
 import json
 import shutil
 import sys
+import time
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -40,10 +43,36 @@ SKIP = {"pp2023_1876_thumbnail.jpg"}
 # MD5 checksums of the zip files each extracted item came from
 MANIFEST_NAME = ".manifest.json"
 
+# attempts at each ScienceBase request, and the wait before the first retry,
+# which doubles on each retry, so the default waits 5, 10, and 20 s
+ATTEMPTS = 4
+RETRY_WAIT = 5.0
+
+
+def retry(request, what: str):
+    """Call ``request``, retrying on a server error, timeout, or dropped connection."""
+    for attempt in range(1, ATTEMPTS + 1):
+        try:
+            return request()
+        except urllib.error.HTTPError as e:
+            if e.code < 500 or attempt == ATTEMPTS:
+                raise
+            error = e
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if attempt == ATTEMPTS:
+                raise
+            error = e
+        wait = RETRY_WAIT * 2 ** (attempt - 1)
+        print(f"{what}: {error}; retrying in {wait:.0f} s")
+        time.sleep(wait)
+
 
 def item_files() -> list[dict]:
-    with urllib.request.urlopen(ITEM_URL, timeout=60) as response:
-        item = json.load(response)
+    def request():
+        with urllib.request.urlopen(ITEM_URL, timeout=60) as response:
+            return json.load(response)
+
+    item = retry(request, "ScienceBase item")
     return [f for f in item["files"] if f["name"] not in SKIP]
 
 
@@ -63,11 +92,15 @@ def fetch(f: dict, force: bool) -> Path:
         return pth
     print(f"{f['name']}: downloading {f['size'] / 1e6:.1f} MB")
     tmp = pth.with_suffix(pth.suffix + ".part")
-    with (
-        urllib.request.urlopen(f["url"], timeout=120) as response,
-        tmp.open("wb") as out,
-    ):
-        shutil.copyfileobj(response, out, 1 << 20)
+
+    def request():
+        with (
+            urllib.request.urlopen(f["url"], timeout=120) as response,
+            tmp.open("wb") as out,
+        ):
+            shutil.copyfileobj(response, out, 1 << 20)
+
+    retry(request, f["name"])
     if md5sum(tmp) != md5:
         tmp.unlink()
         sys.exit(f"{f['name']}: checksum does not match ScienceBase")
