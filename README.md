@@ -68,6 +68,12 @@ percent-format `.py` files, which are the tracked source. Each is paired with a
 saving either file in JupyterLab updates both, and `pixi run sync-notebooks`
 creates or updates the `.ipynb` files.
 
+## Hawaii island models
+
+`notebooks/` converts the data release models to MODFLOW 6 SWI models
+(`pixi run convert <island> --run`), runs them, and compares the results with
+MODFLOW-2005; see [notebooks/README.md](notebooks/README.md).
+
 ## SWI test notebooks
 
 `notebooks-verification/` holds jupytext notebooks that build, run, and plot the SWI Package
