@@ -46,12 +46,18 @@ def load_mf2005(island: str, scenario: int = 0) -> flopy.modflow.Modflow:
     ws = DATA_DIR / "model" / f"input.{island}.{scenario}"
     if not ws.is_dir():
         sys.exit(f"'{ws}' does not exist; run `pixi run get-data {island}`")
+    nam = f"{mf2005_name(island, scenario)}.nam"
+    load_only = ["dis", "bas6", "lpf", "ghb", "drn", "rch", "swi2"]
+    # the No Withdrawal and Predevelopment scenarios have no wells
+    packages = [
+        line.split()[0].lower()
+        for line in (ws / nam).read_text().splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
+    if "wel" in packages:
+        load_only.append("wel")
     return flopy.modflow.Modflow.load(
-        f"{mf2005_name(island, scenario)}.nam",
-        model_ws=ws,
-        check=False,
-        verbose=False,
-        load_only=["dis", "bas6", "lpf", "ghb", "drn", "wel", "rch", "swi2"],
+        nam, model_ws=ws, check=False, verbose=False, load_only=load_only
     )
 
 
@@ -167,13 +173,14 @@ def build_gwf(
         # SWI2 wells pump whichever zone they are in; a freshwater model can
         # only pump freshwater, so a well whose freshwater zone vanishes is
         # reduced over the last reduction_length above the interface
-        flopy.mf6.ModflowGwfwel(
-            gwf,
-            auto_flow_reduce=reduction_length,
-            flow_reduction_length=True,
-            afrcsv_filerecord=f"output/{name}.afr.csv",
-            stress_period_data=stress_period_data(m.wel, ["flux"], ibound),
-        )
+        if m.wel is not None:
+            flopy.mf6.ModflowGwfwel(
+                gwf,
+                auto_flow_reduce=reduction_length,
+                flow_reduction_length=True,
+                afrcsv_filerecord=f"output/{name}.afr.csv",
+                stress_period_data=stress_period_data(m.wel, ["flux"], ibound),
+            )
         flopy.mf6.ModflowGwfrcha(gwf, recharge=m.rch.rech.array[0, 0])
 
     flopy.mf6.ModflowGwfoc(
