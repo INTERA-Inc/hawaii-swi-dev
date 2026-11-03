@@ -174,4 +174,7 @@ ax.set_title("swi-tvg-layered -- layered saltwater head")
 for ax in axes:
     ax.set_xlabel("Distance, in meters")
     ax.legend(loc="lower left", fontsize=8)
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi_tvg.png", dpi=300, transparent=False)
 plt.show()

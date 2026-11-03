@@ -199,4 +199,7 @@ ax.set_ylim(botm[-1], top)
 ax.set_xlabel("Time, in days")
 ax.set_ylabel("Interface elevation, in meters")
 ax.legend(loc="lower right")
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi_vcol.png", dpi=300, transparent=False)
 plt.show()

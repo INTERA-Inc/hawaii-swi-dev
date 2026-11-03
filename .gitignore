@@ -241,6 +241,9 @@ fort.*
 notebooks-verification/models/
 notebooks/models/
 
+# figures exported by the notebooks
+figures/
+
 # .ipynb files paired with the jupytext .py notebooks (jupytext.toml)
 notebooks/*.ipynb
 notebooks-verification/*.ipynb

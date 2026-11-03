@@ -177,6 +177,9 @@ axes[0, 0].legend(loc="lower left")
 axes[0, 1].legend()
 axes[-1, 0].set_xlabel("Distance, in meters")
 axes[-1, 1].set_xlabel("Distance from the island center, in meters")
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi01.png", dpi=300, transparent=False)
 plt.show()
 
 # %% [markdown]

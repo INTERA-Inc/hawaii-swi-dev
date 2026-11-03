@@ -208,4 +208,7 @@ ax_z.set_title("Interface")
 ax_z.set_ylabel("Elevation, in meters")
 ax_z.set_xlabel("Distance, in meters")
 ax_z.set_ylim(botm, top)
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi_density.png", dpi=300, transparent=False)
 plt.show()

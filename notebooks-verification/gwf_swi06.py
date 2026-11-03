@@ -172,4 +172,7 @@ ax.set_title(f"{name} -- rising sea level")
 ax.set_xlabel("Distance, in meters")
 ax.set_ylabel("Elevation, in meters")
 fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, label="Time, in years")
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi06.png", dpi=300, transparent=False)
 plt.show()

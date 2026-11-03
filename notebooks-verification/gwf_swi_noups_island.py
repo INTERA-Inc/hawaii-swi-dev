@@ -181,4 +181,7 @@ ax_e.set_ylabel("Simulated minus exact head,\nin meters")
 ax_z.set_title("Interface")
 ax_z.set_ylabel("Elevation, in meters")
 ax_z.set_xlabel("Distance, in meters")
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi_noups_island.png", dpi=300, transparent=False)
 plt.show()

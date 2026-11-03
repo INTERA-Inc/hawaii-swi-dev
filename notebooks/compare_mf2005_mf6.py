@@ -1,7 +1,7 @@
 # ---
 # jupyter:
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: hawaii-swi-dev:default (3.12.16)
 #     language: python
 #     name: python3
 # ---
@@ -42,7 +42,7 @@ from mf2005_to_mf6 import convert, default_ws, mf2005_heads_zeta
 # Oahu 0 to 4.
 
 # %%
-island = "oahu"
+island = "maui"
 scenario = 0
 
 ws = default_ws(island, scenario)
@@ -122,6 +122,8 @@ print(
 # ## Plot the results
 
 # %%
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
 for k in range(gwf.dis.nlay.array):
     fig, axes = plt.subplots(2, 2, figsize=(11, 10), constrained_layout=True)
     zmin = float(np.nanmin(np.where(active[k], zeta05[k], np.nan)))
@@ -150,6 +152,8 @@ for k in range(gwf.dis.nlay.array):
     ax.set_xlabel("MODFLOW-2005 interface elevation, in feet")
     ax.set_ylabel("MODFLOW 6 interface elevation, in feet")
     ax.set_title("Cells with the interface in the aquifer")
+    name = f"compare_{island}_{scenario}_layer{k + 1}.png"
+    fig.savefig(figures / name, dpi=300, transparent=False)
 plt.show()
 
 # %% [markdown]

@@ -226,4 +226,7 @@ ax.set_xlabel("Time, in days")
 ax.set_ylabel("Interface elevation, in meters")
 ax.set_xlim(0, perlen)
 ax.legend()
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi_breakthrough.png", dpi=300, transparent=False)
 plt.show()

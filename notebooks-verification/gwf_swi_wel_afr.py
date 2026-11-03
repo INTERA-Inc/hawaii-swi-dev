@@ -416,4 +416,7 @@ for ax, name in zip(axes.flat, sims):
     h1, l1 = ax.get_legend_handles_labels()
     h2, l2 = axz.get_legend_handles_labels()
     ax.legend(h1 + h2, l1 + l2, fontsize=8, loc="center right")
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi_wel_afr.png", dpi=300, transparent=False)
 plt.show()
