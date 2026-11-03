@@ -7,10 +7,13 @@ and compare the results with the MODFLOW-2005 output in the data release.
 | Notebook | Description |
 | --- | --- |
 | `compare_mf2005_mf6` | Converts and runs one island model and compares the MODFLOW 6 interface and heads with MODFLOW-2005 |
-| `cross_sections` | Plots the freshwater and saltwater along the rows of figure 26 of Izuka and Rotzoll (2023), with the MODFLOW 6 interface where it has been run |
+| `cross_sections` | Plots the MODFLOW-2005 and MODFLOW 6 freshwater and saltwater along the rows of figure 26 of Izuka and Rotzoll (2023), where they differ, and the differences in feet along the row |
 
 The conversion is done by `scripts/mf2005_to_mf6.py`, which the notebooks
 import and which can also be run from the command line.
+
+The notebooks write their figures to `figures/` in the repository root, which is
+excluded from the repository.
 
 ## Build a model
 

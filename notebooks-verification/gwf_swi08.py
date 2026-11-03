@@ -215,4 +215,7 @@ for (name, title), (ax_z, ax_h) in zip(cases.items(), axes):
 axes[0, 1].legend(fontsize=8, ncol=2)
 axes[-1, 0].set_xlabel("Distance, in meters")
 axes[-1, 1].set_xlabel("Distance, in meters")
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi08.png", dpi=300, transparent=False)
 plt.show()

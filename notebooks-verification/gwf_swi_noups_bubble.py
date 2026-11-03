@@ -234,4 +234,7 @@ for ax, (title, steps) in zip(axes, periods.items()):
     ax.set_ylabel("Elevation, in meters")
     ax.legend(loc="center left", bbox_to_anchor=(1.0, 0.5), fontsize=8)
 axes[-1].set_xlabel("Distance, in meters")
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi_noups_bubble.png", dpi=300, transparent=False)
 plt.show()

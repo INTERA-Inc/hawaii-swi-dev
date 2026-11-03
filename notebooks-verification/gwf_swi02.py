@@ -177,4 +177,7 @@ fig.colorbar(
     ax=axes,
     label="Time of interface, in days",
 )
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi02.png", dpi=300, transparent=False)
 plt.show()

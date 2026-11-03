@@ -181,4 +181,7 @@ for (mname, title), ax in zip(models.items(), axes):
     ax.set_ylabel("Elevation, in meters")
 axes[0].legend(loc="lower center", ncol=4)
 axes[-1].set_xlabel("Distance, in meters")
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi03.png", dpi=300, transparent=False)
 plt.show()

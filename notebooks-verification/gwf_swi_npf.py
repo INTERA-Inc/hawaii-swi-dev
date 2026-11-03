@@ -154,4 +154,7 @@ ax_h.set_title("Heads with and without SWI")
 ax_h.set_xlabel("Distance, in meters")
 ax_h.set_ylabel("Head, in meters")
 ax_h.legend()
+figures = root / "figures"
+figures.mkdir(exist_ok=True)
+fig.savefig(figures / "gwf_swi_npf.png", dpi=300, transparent=False)
 plt.show()
