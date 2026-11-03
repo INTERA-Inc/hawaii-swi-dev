@@ -110,7 +110,8 @@ The interface difference is MODFLOW 6 minus MODFLOW-2005 in cells where the
 MODFLOW-2005 interface is within the aquifer. Eight of the reduced Kauai wells,
 which account for 1.57 million ft³/d of the reduction, are in cells that
 MODFLOW-2005 fills with saltwater; the others are in cells where the MODFLOW 6
-freshwater zone is thinner than in MODFLOW-2005. Scenarios 1 to 4 have not been
+freshwater zone is thinner than in MODFLOW-2005. Scenarios 1 and 2, which have
+no wells, also converge on all three islands; scenarios 3 and 4 have not been
 run.
 
 ## References

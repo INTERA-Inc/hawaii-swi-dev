@@ -106,17 +106,20 @@ summarize("head, all active cells", dh, active & (head05 > -1.0e29))
 # Wells whose rate MODFLOW 6 reduced because the freshwater zone in the cell is
 # thinner than the reduction length. In MODFLOW-2005 these wells pump saltwater
 # for the part of the rate the freshwater zone cannot supply. Cell ids are
-# zero-based.
+# zero-based. The No Withdrawal and Predevelopment scenarios have no wells.
 
 # %%
-afr = pd.read_csv(ws / "output" / f"{island}.afr.csv")
-afr["cellid"] = [gwf.modelgrid.get_lrc(n - 1)[0] for n in afr["cellnumber"]]
-print(afr[["cellid", "rate-requested", "rate-actual", "wel-reduction"]])
-q = gwf.wel.stress_period_data.get_data(0)["q"].sum()
-print(
-    f"{len(afr)} wells reduced by {afr['wel-reduction'].sum():.0f} ft3/d "
-    f"of {q:.0f} ft3/d requested"
-)
+if gwf.get_package("wel") is None:
+    print("no wells")
+else:
+    afr = pd.read_csv(ws / "output" / f"{island}.afr.csv")
+    afr["cellid"] = [gwf.modelgrid.get_lrc(n - 1)[0] for n in afr["cellnumber"]]
+    print(afr[["cellid", "rate-requested", "rate-actual", "wel-reduction"]])
+    q = gwf.wel.stress_period_data.get_data(0)["q"].sum()
+    print(
+        f"{len(afr)} wells reduced by {afr['wel-reduction'].sum():.0f} ft3/d "
+        f"of {q:.0f} ft3/d requested"
+    )
 
 # %% [markdown]
 # ## Plot the results
