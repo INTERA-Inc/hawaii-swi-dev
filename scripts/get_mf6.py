@@ -8,12 +8,17 @@ and the flopy MODFLOW 6 classes are regenerated from those DFN files.
 Pass ``--if-missing`` (used by the activation hook) to do nothing, without
 network access, when mf6, the DFN files, and the generated classes are present.
 Pass ``--force`` to reinstall even when the latest release is installed.
+Pass ``--check`` to report whether a new release is available, without installing.
+Pass ``--notify`` with ``--if-missing`` (used by the activation hook) to print a
+notice when a new release is available.
 """
 
 import argparse
+import json
 import os
 import sys
 import tempfile
+import time
 import urllib.request
 import zipfile
 from importlib.util import find_spec
@@ -24,6 +29,19 @@ REPO = "modflow6-feat-swi-preview"
 
 # installed release tag, written to the environment prefix
 STAMP_NAME = "mf6-swi-release.txt"
+
+# latest release tag found on GitHub, written to the environment prefix; its
+# modification time is when GitHub was last asked
+LATEST_NAME = "mf6-swi-latest.txt"
+
+# seconds between the activation hook's requests to GitHub (one day)
+NOTIFY_INTERVAL = 86400
+
+# seconds --notify waits for GitHub, so being offline barely delays activation
+NOTIFY_TIMEOUT = 3
+
+# seconds --check waits for GitHub
+CHECK_TIMEOUT = 30
 
 
 def conda_prefix() -> Path:
@@ -51,6 +69,10 @@ def stamp_path(prefix: Path) -> Path:
     return prefix / "share" / STAMP_NAME
 
 
+def latest_path(prefix: Path) -> Path:
+    return prefix / "share" / LATEST_NAME
+
+
 def mf6_installed(prefix: Path) -> bool:
     exe = "mf6.exe" if sys.platform.startswith("win") else "mf6"
     return (bindir(prefix) / exe).is_file()
@@ -75,6 +97,67 @@ def is_complete(prefix: Path) -> bool:
         and any(dfndir().glob("*.dfn"))
         and swi_classes_generated()
     )
+
+
+def latest_tag(timeout: float) -> str:
+    url = f"https://api.github.com/repos/{OWNER}/{REPO}/releases/latest"
+    with urllib.request.urlopen(url, timeout=timeout) as response:
+        return json.load(response)["tag_name"]
+
+
+def write_latest(prefix: Path, tag: str) -> None:
+    pth = latest_path(prefix)
+    pth.parent.mkdir(parents=True, exist_ok=True)
+    pth.write_text(f"{tag}\n")
+
+
+def check(prefix: Path) -> int:
+    try:
+        tag = latest_tag(CHECK_TIMEOUT)
+    except (OSError, ValueError, KeyError) as e:
+        print(f"could not get the latest {OWNER}/{REPO} release: {e}", file=sys.stderr)
+        return 1
+    write_latest(prefix, tag)
+
+    installed = installed_tag(prefix)
+    if tag == installed:
+        print(f"{OWNER}/{REPO} release {tag!r} is installed and is the latest")
+    else:
+        print(
+            f"{OWNER}/{REPO} release {tag!r} is available (installed: {installed!r}); "
+            "run `pixi run get-mf6` to install it"
+        )
+    return 0
+
+
+def notify(prefix: Path) -> None:
+    pth = latest_path(prefix)
+    tag = pth.read_text().strip() if pth.is_file() else ""
+    if not pth.is_file() or time.time() - pth.stat().st_mtime >= NOTIFY_INTERVAL:
+        # a failed request also restarts the interval, so that activating while
+        # offline waits for the timeout only once a day
+        try:
+            tag = latest_tag(NOTIFY_TIMEOUT)
+        except (OSError, ValueError, KeyError):
+            pass
+        write_latest(prefix, tag)
+
+    if tag and tag != installed_tag(prefix):
+        # pixi discards the output of activation scripts, so write to the terminal,
+        # starting clear of the pixi progress line
+        if sys.platform.startswith("win"):
+            device, start = "CONOUT$", "\n"
+        else:
+            device, start = "/dev/tty", "\r\033[K"
+        try:
+            with open(device, "w") as terminal:
+                print(
+                    f"{start}[get_mf6] MODFLOW 6 SWI preview release {tag!r} is available; "
+                    "run 'pixi run get-mf6' to install it.",
+                    file=terminal,
+                )
+        except OSError:
+            pass
 
 
 def install_dfns(release: dict, downloads: Path, quiet: bool) -> None:
@@ -124,11 +207,25 @@ def main() -> int:
         action="store_true",
         help="Do nothing if the installation is complete.",
     )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Report whether a new release is available, without installing.",
+    )
+    parser.add_argument(
+        "--notify",
+        action="store_true",
+        help="With --if-missing, print a notice when a new release is available.",
+    )
     parser.add_argument("--quiet", action="store_true", help="Show fewer messages.")
     args = parser.parse_args()
 
     prefix = conda_prefix()
+    if args.check:
+        return check(prefix)
     if args.if_missing and not args.force and is_complete(prefix):
+        if args.notify:
+            notify(prefix)
         return 0
 
     from flopy.utils.get_modflow import get_release, run_main
@@ -158,6 +255,7 @@ def main() -> int:
     pth = stamp_path(prefix)
     pth.parent.mkdir(parents=True, exist_ok=True)
     pth.write_text(f"{tag}\n")
+    write_latest(prefix, tag)
     if not args.quiet:
         print(f"installed {OWNER}/{REPO} release {tag!r}")
     return 0
