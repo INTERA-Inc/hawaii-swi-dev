@@ -5,10 +5,11 @@
 # openssl otherwise sets it to an empty certs/ subdir.
 export SSL_CERT_DIR="${CONDA_PREFIX}/ssl"
 
-# Install MODFLOW 6 on first activation; a fast, offline no-op afterwards. Never
-# fails activation. Set MF6_SKIP_AUTOINSTALL to disable (CI runs get-mf6
+# Install MODFLOW 6 on first activation, and print a notice when a new release is
+# available, asking GitHub at most once a day; otherwise a fast, offline no-op.
+# Never fails activation. Set MF6_SKIP_AUTOINSTALL to disable (CI runs get-mf6
 # explicitly).
 if [ -z "${MF6_SKIP_AUTOINSTALL:-}" ]; then
-  python "${PIXI_PROJECT_ROOT}/scripts/get_mf6.py" --if-missing --quiet || \
+  python "${PIXI_PROJECT_ROOT}/scripts/get_mf6.py" --if-missing --notify --quiet || \
     echo "[get_mf6] WARNING: MODFLOW 6 setup failed; run 'pixi run get-mf6 --force' to retry." >&2
 fi

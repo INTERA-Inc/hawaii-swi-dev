@@ -21,9 +21,11 @@ extracted to `dfn/` and the flopy MODFLOW 6 classes are regenerated from them,
 so flopy supports the SWI package. The first `pixi run` or `pixi shell` does the
 same automatically if it has not been done.
 
-Run `pixi run get-mf6` to update to a newer preview release, or
-`pixi run get-mf6 --force` to reinstall. `pixi run check-mf6` reports the
-installed version and `pixi run smoke-test` builds and runs a small SWI model.
+Activating the environment in a terminal prints a notice when a newer preview
+release is available, asking GitHub at most once a day. `pixi run get-mf6 --check`
+asks now, and `pixi run get-mf6` updates to the newer release, or
+`pixi run get-mf6 --force` reinstalls. `pixi run check-mf6` reports the installed
+version and `pixi run smoke-test` builds and runs a small SWI model.
 
 ## USGS data release
 

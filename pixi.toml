@@ -54,7 +54,8 @@ rtds-action = ">=1.1.0, <2"
 # Complete the setup once `pixi install` has created the environment.
 install = { depends-on = ["get-mf6", "get-exes", "get-data"] }
 # Install the latest MODFLOW 6 SWI preview release and its DFN files, and
-# regenerate the flopy MODFLOW 6 classes. Pass --force to reinstall.
+# regenerate the flopy MODFLOW 6 classes. Pass --force to reinstall, or --check
+# to report whether a new release is available without installing it.
 get-mf6 = "python scripts/get_mf6.py"
 # Install the mixed (mf2005) and double (mf2005dbl) precision MODFLOW-2005
 # executables, for rerunning the data release models. Pass --force to reinstall.
@@ -81,13 +82,16 @@ docs-clean = "rm -rf docs/_build docs/source/notebooks"
 # whichever of the two was edited last.
 sync-notebooks = "jupytext --sync notebooks/*.py notebooks-verification/*.py"
 jupyter = "jupyter lab"
+# Open VS Code in the project root with the pixi environment activated.
+code = "code ."
 lint = "ruff check ."
 format = "ruff format ."
 spell = "codespell"
 
 # pixi has no post-install hook, so the (idempotent) installer runs from an
 # activation script. The first `pixi run`/`pixi shell` installs MODFLOW 6; later
-# activations are a fast, offline no-op.
+# activations print a notice when a new release is available, asking GitHub at
+# most once a day, and are otherwise a fast, offline no-op.
 [target.unix.activation]
 scripts = ["scripts/postinstall.sh"]
 
