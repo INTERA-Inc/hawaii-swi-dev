@@ -137,8 +137,6 @@ for name, h0 in cases.items():
 
     zeta_expected = np.clip(-40.0 * head + 41.0 * h0, botm_aquifer, topf)
     assert np.allclose(zeta, zeta_expected, atol=1.0e-4)
-    assert np.all(zeta >= botm_aquifer - 1.0e-6), "zeta below aquifer bottom"
-    assert np.all(zeta <= topf + 1.0e-6), "zeta above aquifer top"
 
     # absolute imbalance relative to the peak flow
     df = pd.read_csv(ws / f"output/{name}.bud.csv")

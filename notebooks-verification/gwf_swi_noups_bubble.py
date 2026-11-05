@@ -143,8 +143,8 @@ for name in cases:
 # %% [markdown]
 # ## Check the results
 #
-# Both cases must satisfy Ghyben-Herzberg, give the same interface in both
-# models, and conserve mass for both fluids. At the end of period 1 the lens is
+# Both cases must satisfy Ghyben-Herzberg, limited to the cell top and bottom,
+# give the same interface in both models, and conserve mass for both fluids. At the end of period 1 the lens is
 # steady with the interface on the aquifer bottom over the interior. In the
 # near-shore cell the AMT-LMK interface must be deeper than the upstream one,
 # that is, closer to the Dupuit position: upstream weighting takes the thick
@@ -169,9 +169,9 @@ for name in cases:
     ws = Path(sims[name].sim_path)
     times, zeta, hf, hs, zs, nouter = read_results(ws)
     results[name] = times, zeta
-    assert np.allclose(zeta[-1], -alphaf * hf + alphas * hs)
+    # the zeta output is limited to the cell
+    assert np.allclose(zeta[-1], np.clip(-alphaf * hf + alphas * hs, botm, top))
     assert np.allclose(zeta[-1], zs)
-    assert zeta.min() >= botm - 1.0e-6 and zeta.max() <= top + 1.0e-6
     for nam in ("freshwater", "saltwater"):
         df = pd.read_csv(ws / f"output/{nam}.bud.csv")
         imbalance = (df["TOTAL_IN"] - df["TOTAL_OUT"]).abs().max()

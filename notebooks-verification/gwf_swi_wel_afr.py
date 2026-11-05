@@ -10,10 +10,12 @@
 # # Well flow reduction with the SWI Package
 #
 # With SWI, the WEL AUTO_FLOW_REDUCE taper is applied over the part of the
-# cell occupied by the simulated fluid: a freshwater model raises the bottom of
-# the interval to max(cell bottom, zeta) and a saltwater model lowers the top
-# to min(cell top, zeta). The reduction then also applies to confined cells,
-# because the fluid zone can vanish as the interface moves through the cell.
+# cell occupied by the simulated fluid: in a freshwater model from
+# max(cell bottom, zeta) up to the water table or the cell top, and in a
+# saltwater model from the cell bottom up to min(cell top, zeta). The interface
+# is computed from the current heads. The reduction also applies to confined
+# cells, because the fluid zone can vanish as the interface moves through the
+# cell.
 # Four cases compare the simulated well rate with the analytical taper:
 #
 # 1. `swi-welafr01`: single fluid, unconfined two-cell drawdown; a model

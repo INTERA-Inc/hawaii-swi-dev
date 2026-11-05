@@ -137,8 +137,6 @@ for i, t in enumerate(times):
     zeta_expected = np.clip(-40.0 * head + 41.0 * sl[i], botm_aquifer, top_island)
     adiff = np.abs(zeta - zeta_expected).max()
     assert np.allclose(zeta, zeta_expected, atol=1.0e-4), f"period {i + 1}"
-    assert np.all(zeta >= botm_aquifer - 1.0e-6), "zeta below aquifer bottom"
-    assert np.all(zeta <= top_island + 1.0e-6), "zeta above aquifer top"
     print(
         f"period {i + 1}: sea level {sl[i]:.2f} m, maximum zeta difference {adiff:.2e} m"
     )

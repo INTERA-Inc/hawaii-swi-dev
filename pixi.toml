@@ -73,6 +73,9 @@ smoke-test = "python scripts/smoke_test.py"
 # Run the SWI notebooks; fails on an error or a notebook over 30 s. Pass
 # notebook paths to run specific ones.
 run-verification-notebooks = "python scripts/run_verification_notebooks.py"
+# Report the SWI autotests on the feat-swi branch that are new or have changed
+# since the commit in notebooks-verification/feat-swi-commit.txt.
+check-swi-tests = "python scripts/check_swi_tests.py"
 # Build the documentation in docs/_build/html. docs-build-exec executes the
 # notebooks first; docs-build renders them without output.
 docs-build = "python scripts/sphinx_build.py"
