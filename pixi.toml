@@ -81,6 +81,9 @@ docs-clean = "rm -rf docs/_build docs/source/notebooks"
 # Create or update the .ipynb paired with each jupytext .py notebook, from
 # whichever of the two was edited last.
 sync-notebooks = "jupytext --sync notebooks/*.py notebooks-verification/*.py"
+# Write the .ipynb of the notebooks that read existing model output, from the .py,
+# with their output. These do not run models.
+execute-notebooks = "jupytext --to ipynb --execute notebooks/cross_sections.py notebooks/water_budgets.py"
 jupyter = "jupyter lab"
 # Open VS Code in the project root with the pixi environment activated.
 code = "code ."

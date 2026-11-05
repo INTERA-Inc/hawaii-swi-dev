@@ -70,6 +70,12 @@ percent-format `.py` files, which are the tracked source. Each is paired with a
 saving either file in JupyterLab updates both, and `pixi run sync-notebooks`
 creates or updates the `.ipynb` files.
 
+`pixi run execute-notebooks` replaces the `.ipynb` of `cross_sections` and
+`water_budgets` with one built from the `.py` and run, without running a model.
+They use the MODFLOW 6 output already in `notebooks/models/`, so run
+`pixi run convert <island> --run` first to refresh it; an island without output
+shows only MODFLOW-2005.
+
 ## Hawaii island models
 
 `notebooks/` converts the data release models to MODFLOW 6 SWI models

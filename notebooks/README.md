@@ -8,6 +8,7 @@ and compare the results with the MODFLOW-2005 output in the data release.
 | --- | --- |
 | `compare_mf2005_mf6` | Converts and runs one island model and compares the MODFLOW 6 interface and heads with MODFLOW-2005 |
 | `cross_sections` | Plots the MODFLOW-2005 and MODFLOW 6 freshwater and saltwater along the rows of figure 26 of Izuka and Rotzoll (2023), where they differ, and the differences in feet along the row |
+| `water_budgets` | Compares the MODFLOW-2005 and MODFLOW 6 global water budgets of each island, in million gallons per day |
 
 The conversion is done by `scripts/mf2005_to_mf6.py`, which the notebooks
 import and which can also be run from the command line.
@@ -113,6 +114,25 @@ MODFLOW-2005 fills with saltwater; the others are in cells where the MODFLOW 6
 freshwater zone is thinner than in MODFLOW-2005. Scenarios 1 and 2, which have
 no wells, also converge on all three islands; scenarios 3 and 4 have not been
 run.
+
+## Water budgets
+
+SWI2 simulates flow of saltwater, and the single-fluid MODFLOW 6 model does not,
+so the coastal and drain rates of the two models differ most in cells that are
+filled with saltwater. Scenario 0, in million gallons per day (Mgal/d):
+
+| Island | Coastal inflow, MODFLOW-2005 | Coastal inflow, MODFLOW 6 | Part of MODFLOW-2005 inflow in saltwater cells |
+| --- | --- | --- | --- |
+| Kauai | 1,766 | 1.8 | 1,766 |
+| Maui | 178 | 11 | 178 |
+| Oahu | 308 | 0.1 | 304 |
+
+Saltwater cells have less than 1 ft of freshwater. On Oahu, this water leaves
+through drains: 310 Mgal/d of the 668 Mgal/d of MODFLOW-2005 drain discharge is
+from saltwater cells, where the drain elevations are 0 to 2 ft for the middle 80
+percent of the cells and the heads are near the equivalent freshwater head of
+the sea at the top of the model, about 13 ft. On Kauai it leaves through the
+coast. The MODFLOW 6 model does not have this flow.
 
 ## References
 
